@@ -25,10 +25,21 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import AppCssStyles from "./AppCssStyle";
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
+import { Route, Switch, Redirect } from "react-router-dom";
+import DashboardView from "./pages/dashboardView";
+import TypographyView from "./pages/typography";
+import NotificationsView from "./pages/notifications";
+import TablesView from "./pages/table";
+import IconView from "./pages/icons";
+import ErrorView from "./pages/errorpage";
 
 const App = ({ classes, theme, isOpened, ...props }) => (
   <div className={classes.root}>
     <CssBaseline />
+
+    {/*顶部栏 start*/}
     <AppBar
       color="primary"
       position="fixed"
@@ -48,8 +59,24 @@ const App = ({ classes, theme, isOpened, ...props }) => (
         <Typography variant="h6" color="inherit" noWrap>
           Materials-UI Demo
         </Typography>
+
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <SearchIcon />
+          </div>
+          <InputBase
+            placeholder="Search…"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput
+            }}
+          />
+        </div>
       </Toolbar>
     </AppBar>
+    {/*顶部栏 end*/}
+
+    {/*侧边弹出栏 start*/}
     <Drawer
       className={classes.drawer}
       variant="persistent"
@@ -91,15 +118,34 @@ const App = ({ classes, theme, isOpened, ...props }) => (
         ))}
       </List>
     </Drawer>
+    {/*侧边弹出栏 end*/}
+
+    {/*主要显示页 start*/}
     <main
       className={classNames(classes.content, {
         [classes.contentShift]: isOpened
       })}
     >
       <div className={classes.drawerHeader} />
-      <Typography paragraph>材质化UI Demo</Typography>
-      <Typography paragraph>测试测试测试</Typography>
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
+        {/* 仪表盘*/}
+        <Route path="/app/dashboard" component={DashboardView} />
+        {/*文笔框 */}
+        <Route path="/app/typography" component={TypographyView} />
+        {/*表 */}
+        <Route path="/app/tables" component={TablesView} />
+
+        {/*提示 */}
+        <Route path="/app/notifications" component={NotificationsView} />
+
+        {/**标志 */}
+        <Route exact path="/app/icon" component={IconView} />
+        {/**错误页 */}
+        <Route component={ErrorView} />
+      </Switch>
     </main>
+    {/*主要显示页 end*/}
   </div>
 );
 export default compose(withStyles(AppCssStyles, { withTheme: true }))(App);
